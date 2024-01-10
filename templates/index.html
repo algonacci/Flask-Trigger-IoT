@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ESP8266 LED Control</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-switch@3.3.4/dist/css/bootstrap3/bootstrap-switch.min.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="container mt-4">
+      <h1 class="mb-3">ESP8266 LED Control</h1>
+      <div class="form-check form-switch">
+        <input type="checkbox" class="form-check-input" id="led_toggle" data-on-text="ON" data-off-text="OFF" data-on-color="success" data-off-color="danger" {% if led_state %}checked{% endif %} />
+        <label class="form-check-label" for="led_toggle">LED State</label>
+      </div>
+      <br />
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-switch@3.3.4/dist/js/bootstrap-switch.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        // Initialize the Bootstrap switch
+        $("#led_toggle").bootstrapSwitch();
+
+        // Handle the switch state change
+        $("#led_toggle").on("switchChange.bootstrapSwitch", function (event, state) {
+          $.post("/toggle_led", { led_state: state }, function (data) {
+            if (data.success) {
+              // Update the switch state (optional)
+              $("#led_toggle").bootstrapSwitch("state", data.led_state, true);
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
